@@ -1,5 +1,5 @@
 import { Post } from "./post.model";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { catchError, map } from "rxjs/operators";
 import { Subject, throwError } from "rxjs";
@@ -34,7 +34,10 @@ export class PostsService {
   fetchPosts() {
     return this.http
       .get<{ [key: string]: Post }>(
-        "https://angular-max-http-9dec2-default-rtdb.firebaseio.com/posts.json"
+        "https://angular-max-http-9dec2-default-rtdb.firebaseio.com/posts.json",
+        {
+          headers: new HttpHeaders({ "custom-header": "amr" }),
+        }
       )
       .pipe(
         map((responseData) => {
