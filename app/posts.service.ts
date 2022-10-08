@@ -47,6 +47,7 @@ export class PostsService {
           params: new HttpParams()
             .append("print", "pretty")
             .append("custom", "amr"), //result: https://angular-max-http-9dec2-default-rtdb.firebaseio.com/posts.json?print=pretty&custom=amr
+          responseType: "json", // default type
         }
       )
       .pipe(
@@ -70,7 +71,7 @@ export class PostsService {
     return this.http
       .delete(
         "https://angular-max-http-9dec2-default-rtdb.firebaseio.com/posts.json",
-        { observe: "events" }
+        { observe: "events", responseType: "text" }
       )
       .pipe(
         // tap : do somthing woth response but not disturbe subjscrobe fn
