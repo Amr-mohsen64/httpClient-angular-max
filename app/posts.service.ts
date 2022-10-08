@@ -1,5 +1,5 @@
 import { Post } from "./post.model";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { catchError, map } from "rxjs/operators";
 import { Subject, throwError } from "rxjs";
@@ -37,6 +37,7 @@ export class PostsService {
         "https://angular-max-http-9dec2-default-rtdb.firebaseio.com/posts.json",
         {
           headers: new HttpHeaders({ "custom-header": "amr" }),
+          params: new HttpParams().append("print", "pretty").append('custom', 'amr'), //result: https://angular-max-http-9dec2-default-rtdb.firebaseio.com/posts.json?print=pretty&custom=amr
         }
       )
       .pipe(
