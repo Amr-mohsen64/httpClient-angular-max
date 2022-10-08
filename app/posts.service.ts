@@ -1,7 +1,12 @@
 import { Post } from "./post.model";
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import {
+  HttpClient,
+  HttpEventType,
+  HttpHeaders,
+  HttpParams,
+} from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { catchError, map } from "rxjs/operators";
+import { catchError, map, tap } from "rxjs/operators";
 import { Subject, throwError } from "rxjs";
 
 @Injectable({
@@ -19,7 +24,9 @@ export class PostsService {
     this.http
       .post<{ name: string }>( // the response data types <here>returned value name:-NBlqzDiacZ1PPvkj4Ua
         "https://angular-max-http-9dec2-default-rtdb.firebaseio.com/posts.json",
-        postData
+        postData,
+        //  {observe: "response" } : means to get the row response data not the body object
+        { observe: "response" }
       )
       .subscribe(
         (responseData) => {
@@ -37,7 +44,9 @@ export class PostsService {
         "https://angular-max-http-9dec2-default-rtdb.firebaseio.com/posts.json",
         {
           headers: new HttpHeaders({ "custom-header": "amr" }),
-          params: new HttpParams().append("print", "pretty").append('custom', 'amr'), //result: https://angular-max-http-9dec2-default-rtdb.firebaseio.com/posts.json?print=pretty&custom=amr
+          params: new HttpParams()
+            .append("print", "pretty")
+            .append("custom", "amr"), //result: https://angular-max-http-9dec2-default-rtdb.firebaseio.com/posts.json?print=pretty&custom=amr
         }
       )
       .pipe(
@@ -58,8 +67,19 @@ export class PostsService {
   }
 
   deletePosts() {
-    return this.http.delete(
-      "https://angular-max-http-9dec2-default-rtdb.firebaseio.com/posts.json"
-    );
+    return this.http
+      .delete(
+        "https://angular-max-http-9dec2-default-rtdb.firebaseio.com/posts.json",
+        { observe: "events" }
+      )
+      .pipe(
+        // tap : do somthing woth response but not disturbe subjscrobe fn
+        tap((event) => {
+          if (event.type === HttpEventType.Sent) {
+            // update Ui or inform  user that response sent
+          }
+          if (event.type === HttpEventType.Response) console.log(event.body);
+        })
+      );
   }
 }
